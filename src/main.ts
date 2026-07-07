@@ -1,11 +1,10 @@
 import { Renderer } from './renderer';
 import { AudioEngine } from './audio';
 import { HoldTracker } from './hold';
+import { requestAppFullscreen } from './fullscreen';
 import { runIntro, startCountdown, armHint, updateRepent, setupSoundToggle } from './ui';
 
-// State machine: INTRO → (tap gate: unlocks audio + video) → LOOP ⇄ HOLDING.
-// The two reels are time-aligned by construction (scripts/ingest.mjs), so the
-// flesh layer is always "underneath" the fruit at the same timecode.
+// State machine: INTRO → LOOP ⇄ HOLDING. Fullscreen on load; audio on first gesture.
 
 const fruitVideo = document.getElementById('fruit-video') as HTMLVideoElement;
 const fleshVideo = document.getElementById('flesh-video') as HTMLVideoElement;
@@ -13,18 +12,38 @@ const canvas = document.getElementById('scene') as HTMLCanvasElement;
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+requestAppFullscreen();
+
 const audio = new AudioEngine();
 let hideHint: (() => void) | null = null;
+let experienceEntered = false;
+let gesturedBeforeEnter = false;
+let audioStarted = false;
 const hold = new HoldTracker(() => hideHint?.());
+
+function tryStartAudio() {
+  if (audioStarted || !experienceEntered) return;
+  audioStarted = true;
+  void audio.start();
+}
+
+function onVisitorGesture() {
+  requestAppFullscreen();
+  if (!experienceEntered) {
+    gesturedBeforeEnter = true;
+    return;
+  }
+  tryStartAudio();
+}
+
+window.addEventListener('pointerdown', onVisitorGesture, { once: true });
+window.addEventListener('keydown', onVisitorGesture, { once: true });
 
 const renderer = new Renderer(canvas, fruitVideo, fleshVideo, reducedMotion);
 
 async function enterExperience() {
-  // muted video autoplay needs no gesture; ambient audio unlocks on the
-  // visitor's first interaction (browser policy requires one)
-  const unlockAudio = () => void audio.start();
-  window.addEventListener('pointerdown', unlockAudio, { once: true });
-  window.addEventListener('keydown', unlockAudio, { once: true });
+  experienceEntered = true;
+  if (gesturedBeforeEnter) tryStartAudio();
 
   try {
     await Promise.all([fruitVideo.play(), fleshVideo.play()]);
@@ -43,7 +62,7 @@ async function enterExperience() {
   hold.enabled = true;
   startCountdown();
   setupSoundToggle(() => {
-    void audio.start(); // the button click is itself a valid unlock gesture
+    tryStartAudio(); // the button click is itself a valid unlock gesture
     return audio.toggleMute();
   });
   hideHint = armHint(() => hold.everHeld);
