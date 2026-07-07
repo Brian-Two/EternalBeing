@@ -23,6 +23,7 @@ const ROOT = path.resolve(import.meta.dirname, '..');
 const CACHE = path.join(ROOT, 'media-cache');
 const SEGS = path.join(CACHE, 'segments');
 const OUT = path.join(ROOT, 'public', 'media');
+const LOCAL = path.join(ROOT, 'media-clips'); // hand-edited portions win over URLs
 const FONT = '/System/Library/Fonts/Helvetica.ttc';
 
 const SECTION_SEC = 8;
@@ -77,7 +78,10 @@ const SECTIONS = [
 
 const PLACEHOLDERS_ONLY = process.argv.includes('--placeholders-only');
 
-for (const d of [CACHE, SEGS, OUT, path.join(OUT, 'audio')]) mkdirSync(d, { recursive: true });
+for (const d of [
+  CACHE, SEGS, OUT, path.join(OUT, 'audio'),
+  path.join(LOCAL, 'fruit'), path.join(LOCAL, 'flesh'),
+]) mkdirSync(d, { recursive: true });
 
 const slug = (url) => url.replace(/[^a-z0-9]+/gi, '_').slice(-60);
 
@@ -135,8 +139,62 @@ function cropFilterFor(src, start, srcLen) {
   }
 }
 
+// Edge-energy (sobel) of a region — used to spot vertical videos padded into
+// 16:9 with a *blurred* copy of themselves (blur defeats cropdetect).
+function edgeEnergy(src, t, cropExpr) {
+  try {
+    const out = execFileSync('sh', ['-c',
+      `ffmpeg -ss ${t.toFixed(2)} -i ${JSON.stringify(src)} -frames:v 1 ` +
+      `-vf "${cropExpr},sobel,signalstats,metadata=print" -f null - 2>&1 ` +
+      `| grep -o 'YAVG=[0-9.]*' | head -1 | cut -d= -f2`,
+    ]).toString().trim();
+    return parseFloat(out) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+function blurredPillarboxCrop(src, start) {
+  const sides = Math.max(
+    edgeEnergy(src, start, 'crop=iw/4:ih:0:0'),
+    edgeEnergy(src, start, 'crop=iw/4:ih:iw-iw/4:0'),
+  );
+  const center = edgeEnergy(src, start, 'crop=iw/4:ih:(iw-iw/4)/2:0');
+  // sharp middle + genuinely soft sides = blurred-fill vertical video:
+  // take the real vertical strip, then a 16:9 window biased toward the top
+  // third, where phone-video subjects usually are
+  if (center > 2.5 * sides && sides < 12) {
+    return 'crop=ih*9/16:ih,crop=iw:iw*9/16:0:(in_h-out_h)*0.30';
+  }
+  return null;
+}
+
+// Hand-edited portion dropped in media-clips/<kind>/<word>-<n>.<ext>.
+// Used verbatim: auto-sped so the whole portion fills its slot exactly.
+function localClip(kind, name, i) {
+  for (const ext of ['mp4', 'mov', 'm4v', 'webm', 'MP4', 'MOV']) {
+    const p = path.join(LOCAL, kind, `${name}-${i + 1}.${ext}`);
+    if (existsSync(p)) return p;
+  }
+  return null;
+}
+
+function fitSegment(src, slotSec, out) {
+  const d = duration(src);
+  const speed = d / slotSec; // whole portion → exact slot length
+  execFileSync('ffmpeg', [
+    '-y', '-v', 'error', '-i', src,
+    '-an', '-vf', `setpts=PTS/${speed.toFixed(5)},${NORM}`,
+    '-c:v', 'libx264', '-preset', 'fast', '-crf', '20', out,
+  ]);
+  return speed;
+}
+
 function cutSegment(src, start, srcLen, speed, out) {
-  const bars = cropFilterFor(src, start, srcLen);
+  // black bars first (cropdetect); otherwise test for blurred pillarbox.
+  // Either way NORM then cover-zooms the remaining content to landscape.
+  const bars = cropFilterFor(src, start, srcLen) ?? blurredPillarboxCrop(src, start);
+  if (bars) console.log(`    ↳ bars: ${bars}`);
   const vf = `${bars ? bars + ',' : ''}setpts=PTS/${speed},${NORM}`;
   execFileSync('ffmpeg', [
     '-y', '-v', 'error',
@@ -183,6 +241,13 @@ async function buildLayer(kind) {
 
     for (let i = 0; i < perSection; i++) {
       const out = path.join(SEGS, `${kind}-${name}-${i}.mp4`);
+      const local = localClip(kind, name, i);
+      if (local) {
+        const speed = fitSegment(local, clipSec, out);
+        console.log(`  ★ clip ${i + 1} from media-clips/${kind}/${path.basename(local)} (${speed.toFixed(2)}×)`);
+        segments.push(out);
+        continue;
+      }
       const src = sources[i % Math.max(sources.length, 1)];
       if (src) {
         const d = duration(src);

@@ -8,25 +8,49 @@ An immersive digital art experience inspired by the structure and emotional logi
 
 The current build is a single-page preview:
 
-- **Intro** — black screen → "Eternal Being" → fragmentary scripture → tap to begin
-- **Loop** — full-screen video cycling through all nine fruits in scriptural order (~36 seconds)
+- **Intro** — white screen → "ETERNAL BEING" in letterpressed black type → fragmentary scripture → auto-dissolves into the loop (audio unlocks on first interaction)
+- **Loop** — full-screen video cycling through all nine fruits in scriptural order (8s per fruit, 72 seconds total, 4 clips per word)
 - **Press and hold** — reveals the flesh layer, time-aligned to the fruit timeline; release returns instantly at the same point
-- **Countdown** — minimal release timer at the bottom of the screen
+- **Countdown** — minimal release timer at the bottom of the screen (Christmas 2026)
 - **Sound toggle** — the only visible control besides the interaction itself
 
 ### Fruit ↔ flesh contrast pairs
 
 | Fruit | Flesh |
 |---|---|
-| Love | Hostility |
-| Joy | Envy |
-| Peace | Conflict |
+| Love | Selfish ambition |
+| Joy | Quarrels |
+| Peace | Hostility |
 | Patience | Anger |
-| Kindness | Selfish ambition |
+| Kindness | Envy |
 | Goodness | Harmful desire |
 | Faithfulness | Betrayal |
 | Gentleness | Aggression |
 | Self-control | Indulgence |
+
+Love/Joy pairings come from the sketch document; the remaining seven are placeholder artistic contrasts.
+
+## Providing your own edited clips
+
+Drop hand-cut portions into `media-clips/` and run `npm run ingest`. Files there **always win** over downloaded URLs and generated placeholders.
+
+**Naming:** `media-clips/fruit/<word>-<1..4>.mp4` and `media-clips/flesh/<word>-<1..4>.mp4` (`.mov`/`.m4v`/`.webm` also accepted)
+
+Fruit words: `love joy peace patience kindness goodness faithfulness gentleness self-control`
+Flesh words: `selfish-ambition quarrels hostility anger envy harmful-desire betrayal aggression indulgence`
+
+Example: `media-clips/fruit/love-1.mp4`, `media-clips/flesh/quarrels-3.mp4`
+
+### Clip length spec
+
+Every slot plays for **exactly 2.0 seconds** on screen — 4 clips × 9 words per layer, **72 portions total**. Your portion is auto-sped to fill its slot, so the length you deliver controls playback speed:
+
+| Layer | You provide | Plays at | Feel |
+|---|---|---|---|
+| Fruit | **2.0–2.5s** | 1.0–1.25× | calm, dreamlike |
+| Flesh | **3.5–4.0s** | 1.75–2.0× | rushed, frantic |
+
+Any length technically works (a 3s fruit portion just plays at 1.5×). Landscape 16:9 is ideal; anything else is center-crop-zoomed to fill. Fruit and flesh reels share one 72s timeline in Galatians order, so `flesh/selfish-ambition-*` plays underneath `fruit/love-*`, `flesh/quarrels-*` underneath `fruit/joy-*`, and so on.
 
 ## Tech stack
 

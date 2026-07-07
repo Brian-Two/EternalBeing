@@ -39,12 +39,12 @@ Technical comfort: none assumed. The only instruction ever shown is **"Press and
 
 ### In Scope
 **Core experience**
-- ✅ Intro sequence: black → "Eternal Being" (iPhone-style minimal type) → fragmentary scripture line → "tap to begin" (doubles as the browser audio-unlock gesture)
-- ✅ Continuous full-screen video loop through all nine fruits in Galatians order, ~4s each (~36s full loop), 2 clips per fruit
-- ✅ Press-and-hold (touch + mouse) reveals the works-of-the-flesh layer, time-aligned to the fruit timeline (Love↔Hostility, Joy↔Envy, Peace↔Conflict, Patience↔Anger, Kindness↔Selfish ambition, Goodness↔Harmful desire, Faithfulness↔Betrayal, Gentleness↔Aggression, Self-control↔Indulgence)
+- ✅ Intro sequence: white (Apple-white #fbfbfd) → "ETERNAL BEING" in black letterpressed/imprinted type → fragmentary scripture line → auto-dissolves into the loop (no tap prompt; ambient audio unlocks on the visitor's first interaction instead, since browsers require a gesture)
+- ✅ Continuous full-screen video loop through all nine fruits in Galatians order, 8s each (4 clips per fruit, ~72s full loop)
+- ✅ Press-and-hold (touch + mouse) reveals the works-of-the-flesh layer, time-aligned to the fruit timeline. Pairings follow the sketch-doc columns: Love↔Selfish ambition, Joy↔Quarrels; remaining placeholder pairs: Peace↔Hostility, Patience↔Anger, Kindness↔Envy, Goodness↔Harmful desire, Faithfulness↔Betrayal, Gentleness↔Aggression, Self-control↔Indulgence
 - ✅ Hold transition: 0–0.3s audio distortion begins → 0.3–0.7s image flickers/darkens → ~0.7s flesh fully visible; release returns instantly at the equivalent timeline point (never restarts from Love)
 - ✅ "REPENT" text surfaces during a sustained hold (teasing the full experience's mechanic; no punishment/lockout in the preview)
-- ✅ Release countdown, bottom-center, minimal: `NNN DAYS : HH HOURS : MM MINUTES`, target date in one config value (symbolic placeholder, easily changed)
+- ✅ Release countdown, bottom-center, minimal: `NNN DAYS : HH HOURS : MM MINUTES`, target: **Christmas 2026** (2026-12-25, one config value)
 - ✅ "Press and hold." hint appears only after several seconds of passive watching
 - ✅ Sound toggle (the only button)
 
@@ -128,14 +128,13 @@ eternalbeing/
 ### 7.1 Intro sequence
 | Beat | Content | Timing |
 |---|---|---|
-| 1 | Pure black, silence | ~1s |
-| 2 | **ETERNAL BEING** — thin, generously letter-spaced type, gentle fade/blur-in (SF-adjacent stack: `-apple-system, "Helvetica Neue", Inter`) | ~2.5s |
-| 3 | Fragmentary scripture line (working: **"Against such things there is no law."** — Gal 5:23; alternates in config: "The flesh and the Spirit are in conflict." / "Walk by the Spirit.") | ~3s |
-| 4 | "tap to begin" — small, low-opacity, pulsing | until tap |
-| 5 | Tap → audio unlock → black dissolves into Love clip 1 | ~1s |
+| 1 | Pure white (#fbfbfd), silence | ~0.8s |
+| 2 | **ETERNAL BEING** — black, letterpressed/imprinted (Apple-style deboss: dark bite above, paper highlight beneath), gentle fade/blur-in (SF-adjacent stack: `-apple-system, "Helvetica Neue", Inter`) | ~2.2s |
+| 3 | Fragmentary scripture line (working: **"Against such things there is no law."** — Gal 5:23) | ~3.2s |
+| 4 | Auto-dissolve into Love clip 1 — no tap prompt; ambient audio unlocks on the visitor's first interaction | ~1.6s |
 
 ### 7.2 The loop (fruit layer)
-- Order fixed by Gal 5:22–23: Love, Joy, Peace, Patience, Kindness, Goodness, Faithfulness, Gentleness, Self-control. ~4s per fruit (2 clips ≈ 2s each), ~36s total, seamless return to Love. No visible fruit labels.
+- Order fixed by Gal 5:22–23: Love, Joy, Peace, Patience, Kindness, Goodness, Faithfulness, Gentleness, Self-control. 8s per fruit (4 clips ≈ 2s each), 72s total, seamless return to Love. No visible fruit labels.
 - Clip grammar per fruit: **Clip 1 = everyday expression**, **Clip 2 = costly expression** (sacrifice, restraint, forgiveness).
 - Source clips 3–5s → served at 1.5–2s at 1.1–1.4× speed. Direct cuts; occasional emotional clip at natural speed.
 - Grade: warm, slightly lifted blacks, gentle desaturation; fine film grain; soft vignette; stable framing. Target: "viewing a dream."
@@ -150,7 +149,7 @@ eternalbeing/
 
 ### 7.4 Countdown
 - Bottom-center, minimal mono-spaced digits: `142 DAYS : 04 HOURS : 31 MINUTES`, updating each minute. Small on desktop, readable on mobile, never covers faces.
-- Target: single `RELEASE_DATE` constant in `config.ts`. Placeholder: **Easter 2027 (2027-03-28T00:00:00Z)** — symbolic (resurrection), intentionally adjustable.
+- Target: single `RELEASE_DATE` constant in `config.ts`, currently **Christmas 2026 (2026-12-25)**.
 
 ### 7.5 The dream-look shader stack (research-grounded)
 Network Effect's epilogue credits its GLSL to **Felix Turner, Altered Qualia, and Iñigo Quílez** — i.e., the classic Three.js post-processing school: [Bad TV Shader](https://github.com/felixturner/bad-tv-shader) (distortion + vertical roll), static/RGB-shift passes, film grain. Replication plan, all as EffectComposer passes over a `VideoTexture`, every intensity driven by `holdT`:

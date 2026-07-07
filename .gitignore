@@ -33,3 +33,6 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Hand-edited clip portions (private footage until rights cleared)
+media-clips/

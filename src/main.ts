@@ -64,6 +64,9 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
+// dev-only introspection for automated verification
+(window as unknown as Record<string, unknown>).__eb = { hold, audio };
+
 const start = performance.now();
 function frame() {
   const holdT = hold.update();
