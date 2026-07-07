@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#000000" />
+    <title>Eternal Being</title>
+    <meta name="description" content="An experience of the fruit of the Spirit." />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <canvas id="scene"></canvas>
+
+    <!-- videos feed WebGL textures; never shown directly -->
+    <video id="fruit-video" src="/media/fruit-reel.mp4" loop muted playsinline preload="auto" crossorigin="anonymous"></video>
+    <video id="flesh-video" src="/media/flesh-reel.mp4" loop muted playsinline preload="auto" crossorigin="anonymous"></video>
+
+    <div id="intro">
+      <div id="intro-title">ETERNAL&nbsp;BEING</div>
+      <div id="intro-phrase"></div>
+    </div>
+
+    <div id="repent">REPENT</div>
+    <div id="hint">Press and hold.</div>
+    <div id="countdown"></div>
+    <button id="sound" aria-label="Toggle sound" title="Toggle sound"></button>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
