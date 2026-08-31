@@ -12,20 +12,23 @@ export const INTRO = {
   dissolve: 1600,   // auto-transition into the experience
 };
 
-// Galatians 5:22–23 order; love/joy pairings come from the sketch doc columns.
+// Galatians 5:22–23 order; every pairing comes from the sketch doc columns.
+// Mirrors clips.json — keep the two in step.
 export const SECTIONS = [
   { fruit: 'love', flesh: 'selfish ambition' },
   { fruit: 'joy', flesh: 'quarrels' },
-  { fruit: 'peace', flesh: 'hostility' },
-  { fruit: 'patience', flesh: 'anger' },
-  { fruit: 'kindness', flesh: 'envy' },
-  { fruit: 'goodness', flesh: 'harmful desire' },
-  { fruit: 'faithfulness', flesh: 'betrayal' },
-  { fruit: 'gentleness', flesh: 'aggression' },
-  { fruit: 'self-control', flesh: 'indulgence' },
+  { fruit: 'peace', flesh: 'envy' },
+  { fruit: 'patience', flesh: 'outbursts of anger' },
+  { fruit: 'kindness', flesh: 'dissension' },
+  { fruit: 'goodness', flesh: 'revelry' },
+  { fruit: 'faithfulness', flesh: 'idolatry' },
+  { fruit: 'gentleness', flesh: 'enmity' },
+  { fruit: 'self-control', flesh: 'sexual immorality' },
 ] as const;
 
-export const SECTION_SEC = 8; // must match scripts/ingest.mjs
+// 4 clips × 3.2s slots. Derived from clips.json (slotSec × clipsPerSection);
+// the reels are SECTIONS.length × SECTION_SEC = 115.2s.
+export const SECTION_SEC = 12.8;
 
 export const HOLD = {
   intentMs: 150,     // press shorter than this is a tap, not a hold

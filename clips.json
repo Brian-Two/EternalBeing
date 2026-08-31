@@ -1,0 +1,169 @@
+{
+  "_comment": "EternalBeing clip manifest — single source of truth for the 72 curated portions.",
+  "_howToFixOneClip": [
+    "Edit that clip's start/end/crop below, then run: npm run ingest",
+    "Only the clip you touched is re-cut (its hash changed); everything else is reused.",
+    "Force one slot regardless of hash:  npm run ingest -- --clip fruit-goodness-3",
+    "Review all 72 after a build:        open media-cache/review.html"
+  ],
+  "_fields": {
+    "url": "source page URL",
+    "start/end": "exact window, M:SS / MM:SS / H:MM:SS (decimals allowed, e.g. 10:29.2)",
+    "note": "framing / provenance note; shown on the review sheet",
+    "crop": "optional explicit ffmpeg crop 'w:h:x:y' applied before normalization; disables auto-detect",
+    "autocrop": "optional false to skip bar/pillarbox auto-detection without giving an explicit crop",
+    "pad": "optional download padding in seconds each side (default 3)"
+  },
+
+  "slotSec": 3.2,
+  "clipsPerSection": 4,
+  "speed": { "fruit": 1.25, "flesh": 1.875 },
+  "output": { "width": 1280, "height": 720, "fps": 30 },
+
+  "sections": [
+    {
+      "fruit": "love", "fruitLabel": "love",
+      "flesh": "selfish-ambition", "fleshLabel": "selfish ambition",
+      "fruitClips": [
+        { "url": "https://www.youtube.com/watch?v=8jGdCgLattk", "start": "0:26", "end": "0:30", "note": "agape" },
+        { "url": "https://www.youtube.com/watch?v=zIZ8l5XeQ3k", "start": "0:04", "end": "0:08", "note": "philia — zoom to the frame of the two boys only; leave out the border and the news logo", "crop": "720:405:290:228" },
+        { "url": "https://www.youtube.com/watch?v=ori6V-ilO-w", "start": "0:12", "end": "0:16", "note": "storge" },
+        { "url": "https://www.youtube.com/watch?v=td2O06HfhDY", "start": "11:50", "end": "11:54", "note": "eros" }
+      ],
+      "fleshClips": [
+        { "url": "https://x.com/DissidentWire/status/2068771070048645500", "start": "0:02", "end": "0:08", "note": "must end up landscape" },
+        { "url": "https://www.tiktok.com/@shoppingchinaimportados/video/7575593930733948216", "start": "0:00", "end": "0:06", "note": "must end up landscape" },
+        { "url": "https://www.youtube.com/watch?v=BiM6XgdxsUk", "start": "0:05", "end": "0:11" },
+        { "url": "https://www.youtube.com/watch?v=VPRZpdxg1o4", "start": "1:27", "end": "1:33", "note": "zoom in so the news logo and the link at the top are out of frame", "crop": "1030:580:125:80" }
+      ]
+    },
+    {
+      "fruit": "joy", "fruitLabel": "joy",
+      "flesh": "quarrels", "fleshLabel": "quarrels",
+      "fruitClips": [
+        { "url": "https://www.youtube.com/watch?v=4-94JhLEiN0", "start": "1:27", "end": "1:31", "note": "zoom so the video fills the whole screen, no black bars", "crop": "1440:608:0:236" },
+        { "url": "https://www.youtube.com/watch?v=9MzeoSIMb8Q", "start": "0:18", "end": "0:22", "note": "crop/zoom to fill the whole screen" },
+        { "url": "https://www.youtube.com/watch?v=ydAyvvDQrgY", "start": "0:54", "end": "0:58" },
+        { "url": "https://www.youtube.com/watch?v=pQaOKau5eaY", "start": "0:30", "end": "0:34", "note": "short — zoom so the kid is in frame and it fills the landscape screen", "crop": "720:405:0:620" }
+      ],
+      "fleshClips": [
+        { "url": "https://www.youtube.com/watch?v=8iE1sbpfugo", "start": "0:34", "end": "0:40" },
+        { "url": "https://www.youtube.com/watch?v=TUCUsNx1HTs", "start": "2:00", "end": "2:06" },
+        { "url": "https://www.youtube.com/watch?v=BcaHgzRHjlg", "start": "0:45", "end": "0:51", "note": "ASSUMPTION: sheet said 0:43-0:51 (8s); trimmed to your original 6s window so flesh speed stays constant. Change to 0:43-0:49 if you wanted the head instead." },
+        { "url": "https://www.youtube.com/watch?v=WkBj4d5AeqE", "start": "2:31", "end": "2:37" }
+      ]
+    },
+    {
+      "fruit": "peace", "fruitLabel": "peace",
+      "flesh": "envy", "fleshLabel": "envy",
+      "fruitClips": [
+        { "url": "https://www.youtube.com/watch?v=yHA0vpVpFDo", "start": "3:02", "end": "3:06" },
+        { "url": "https://www.youtube.com/watch?v=yebL4VzMoVE", "start": "0:16", "end": "0:20" },
+        { "url": "https://www.youtube.com/watch?v=N4rK14voaoc", "start": "0:23", "end": "0:27", "note": "short — zoom in to fill the landscape frame" },
+        { "url": "https://www.youtube.com/watch?v=ffajqnuHTjQ", "start": "0:02", "end": "0:06", "note": "Hong Kong 'Sing Hallelujah to the Lord' crowd (Wilson Yuen)" }
+      ],
+      "fleshClips": [
+        { "url": "https://www.youtube.com/watch?v=ganPjnh5WC0", "start": "0:03", "end": "0:09" },
+        { "url": "https://www.youtube.com/watch?v=gfMQ9JwaShY", "start": "0:02", "end": "0:08" },
+        { "url": "https://www.youtube.com/watch?v=UubObmKRKbI", "start": "0:29", "end": "0:35" },
+        { "url": "https://www.youtube.com/watch?v=QTIOFWbrOq4", "start": "0:02", "end": "0:08" }
+      ]
+    },
+    {
+      "fruit": "patience", "fruitLabel": "patience",
+      "flesh": "outbursts-of-anger", "fleshLabel": "outbursts of anger",
+      "fruitClips": [
+        { "url": "https://www.youtube.com/watch?v=iiIKXaEYTkA", "start": "0:10", "end": "0:14" },
+        { "url": "https://www.youtube.com/watch?v=Yo4WF3cSd9Q", "start": "1:36", "end": "1:40" },
+        { "url": "https://www.youtube.com/watch?v=7RCX6tEba1Q", "start": "0:32", "end": "0:36" },
+        { "url": "https://www.youtube.com/watch?v=HRH8zJ8dqpQ", "start": "0:17", "end": "0:21" }
+      ],
+      "fleshClips": [
+        { "url": "https://www.youtube.com/watch?v=Zib2jAuMw_0", "start": "0:13", "end": "0:19" },
+        { "url": "https://www.youtube.com/watch?v=tq4lD_KkCZQ", "start": "19:27", "end": "19:33" },
+        { "url": "https://www.youtube.com/watch?v=JPGOcDJzK_I", "start": "0:06", "end": "0:12" },
+        { "url": "https://www.youtube.com/watch?v=ihA6ClP0M0Y", "start": "0:02", "end": "0:08" }
+      ]
+    },
+    {
+      "fruit": "kindness", "fruitLabel": "kindness",
+      "flesh": "dissension", "fleshLabel": "dissension",
+      "fruitClips": [
+        { "url": "https://www.youtube.com/watch?v=rL29ErbifDA", "start": "1:37", "end": "1:41" },
+        { "url": "https://www.youtube.com/watch?v=oh9569l5GG8", "start": "0:26", "end": "0:30" },
+        { "url": "https://www.youtube.com/watch?v=3w5OyWrXkGY", "start": "0:07", "end": "0:11" },
+        { "url": "https://www.youtube.com/watch?v=6J97kr7colA", "start": "5:12", "end": "5:16" }
+      ],
+      "fleshClips": [
+        { "url": "https://www.youtube.com/watch?v=Ig_vstQsvAk", "start": "0:00", "end": "0:06" },
+        { "url": "https://www.youtube.com/watch?v=XOwgZCiKjrE", "start": "0:00", "end": "0:06" },
+        { "url": "https://www.youtube.com/watch?v=D2oB468l7vg", "start": "1:22", "end": "1:28" },
+        { "url": "https://www.youtube.com/watch?v=-q0mA3hJo08", "start": "0:10", "end": "0:16" }
+      ]
+    },
+    {
+      "fruit": "goodness", "fruitLabel": "goodness",
+      "flesh": "revelry", "fleshLabel": "revelry",
+      "fruitClips": [
+        { "url": "https://www.youtube.com/watch?v=PuVx3OcwIMU", "start": "0:19", "end": "0:23" },
+        { "url": "https://www.youtube.com/watch?v=rTEY2n8Pa4Y", "start": "0:09", "end": "0:13" },
+        { "url": "https://www.youtube.com/watch?v=dH2DVlOCjFM", "start": "1:44", "end": "1:48", "note": "reframe to our landscape — make sure the hug is on screen" },
+        { "url": "https://www.youtube.com/watch?v=CO3vf5Zc4PY", "start": "1:22", "end": "1:26" }
+      ],
+      "fleshClips": [
+        { "url": "https://www.youtube.com/watch?v=qtX_afGQ8b4", "start": "0:10", "end": "0:16" },
+        { "url": "https://www.youtube.com/watch?v=rkUiBhm8vZE", "start": "3:28", "end": "3:34" },
+        { "url": "https://www.youtube.com/watch?v=gMVpFn7VzKc", "start": "0:00", "end": "0:06", "note": "rezoom/reframe so only the video shows, in horizontal mode", "crop": "740:1080:580:0" },
+        { "url": "https://www.youtube.com/watch?v=3B8eD7niLis", "start": "0:10", "end": "0:16" }
+      ]
+    },
+    {
+      "fruit": "faithfulness", "fruitLabel": "faithfulness",
+      "flesh": "idolatry", "fleshLabel": "idolatry",
+      "fruitClips": [
+        { "url": "https://www.youtube.com/watch?v=hjj3-ohskOg", "start": "5:29", "end": "5:33" },
+        { "url": "https://www.youtube.com/watch?v=R7zn_VPaXIo", "start": "4:58", "end": "5:02" },
+        { "url": "https://www.youtube.com/watch?v=V85QBHBtfQc", "start": "1:22", "end": "1:26" },
+        { "url": "https://www.youtube.com/watch?v=gdgBiumYfx4", "start": "1:13", "end": "1:17" }
+      ],
+      "fleshClips": [
+        { "url": "https://www.youtube.com/watch?v=qYoHnSuQQQo", "start": "4:22", "end": "4:28" },
+        { "url": "https://www.youtube.com/watch?v=swaW8J2Nx1E", "start": "0:10", "end": "0:16" },
+        { "url": "https://www.youtube.com/watch?v=XtVWJJZZ-ng", "start": "0:10", "end": "0:16" },
+        { "url": "https://www.youtube.com/watch?v=GrUei3SV6AE", "start": "11:18", "end": "11:24" }
+      ]
+    },
+    {
+      "fruit": "gentleness", "fruitLabel": "gentleness",
+      "flesh": "enmity", "fleshLabel": "enmity",
+      "fruitClips": [
+        { "url": "https://www.youtube.com/watch?v=9Ke3I0UaQc0", "start": "0:11", "end": "0:15" },
+        { "url": "https://www.youtube.com/watch?v=zY0iWqrDTF0", "start": "12:06", "end": "12:10" },
+        { "url": "https://www.youtube.com/watch?v=P0zydZv5_Ek", "start": "0:24", "end": "0:28" },
+        { "url": "https://www.youtube.com/watch?v=unNhzh7uwgc", "start": "0:11", "end": "0:15" }
+      ],
+      "fleshClips": [
+        { "url": "https://www.youtube.com/watch?v=637AORKwn8A", "start": "0:51", "end": "0:57" },
+        { "url": "https://www.youtube.com/watch?v=poaZWaf6ZyE", "start": "0:22", "end": "0:28" },
+        { "url": "https://www.youtube.com/watch?v=Y_dKhkvVBfg", "start": "0:09", "end": "0:15" },
+        { "url": "https://www.youtube.com/watch?v=nRfAdi0s73I", "start": "47:48", "end": "47:54" }
+      ]
+    },
+    {
+      "fruit": "self-control", "fruitLabel": "self-control",
+      "flesh": "sexual-immorality", "fleshLabel": "sexual immorality",
+      "fruitClips": [
+        { "url": "https://www.youtube.com/watch?v=WCndgU24zVE", "start": "10:26", "end": "10:30", "note": "source is already sped up; still gets the layer's 1.25x. If too fast, shorten to 10:26-10:29.2 (plays 1.0x)" },
+        { "url": "https://www.youtube.com/watch?v=HA15c8HQCMw", "start": "5:58", "end": "6:02" },
+        { "url": "https://www.youtube.com/watch?v=X2JRJUEVhhk", "start": "1:11", "end": "1:15" },
+        { "url": "https://www.youtube.com/watch?v=7qQseCZQKYc", "start": "0:00", "end": "0:03.9", "note": "FLAG: this upload is only 3.97s long and 640x352 \u2014 your 0:13-0:17 window doesn't exist in it. Using the whole clip; send a longer/better upload to replace it." }
+      ],
+      "fleshClips": [
+        { "url": "https://www.youtube.com/watch?v=PMR1jH4XMtY", "start": "0:20", "end": "0:26", "crop": "1220:790:700:0", "note": "ADDED CROP (you didn't flag this one): the source is a news broadcast \u2014 this removes the 'HOTEL ROOM MURDER' lower third, the finance ticker, the station bug, and the mugshot inset that pops in around 0:25. Note 0:36-0:42 of the same video is a cleaner hallway stretch if you prefer it." },
+        { "url": "https://www.youtube.com/watch?v=vyBLb1Uj9CE", "start": "1:50", "end": "1:56" },
+        { "url": "https://www.youtube.com/watch?v=-RfRclWgIOg", "start": "13:20", "end": "13:26" },
+        { "url": "https://www.youtube.com/watch?v=kTgWo0Ckp44", "start": "5:00", "end": "5:06" }
+      ]
+    }
+  ]
+}

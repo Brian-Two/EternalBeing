@@ -9,7 +9,7 @@
 
 EternalBeing.io is an immersive digital art experience — not a product website — inspired by the structure, pacing, and emotional logic of [Network Effect](https://networkeffect.io/) (Jonathan Harris & Greg Hochmuth, 2015). Where Network Effect organized 10,000 clips around 100 neutral human behaviors to critique internet overload, EternalBeing organizes short human video moments around the **nine fruits of the Spirit** from Galatians 5:22–23 (love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control). Its defining interaction: **press and hold anywhere**, and the works of the flesh (Galatians 5:19–21) surface from beneath the same timeline — faster, harsher, distorted — then recede the moment you release.
 
-The full experience is a longer build. This PRD covers two things: (1) the **preview page** built today — a sleek, iPhone-caliber intro ("Eternal Being" → a fragmentary scripture line), flowing into a ~36-second looping audiovisual sequence of all nine fruits with the press-and-hold flesh layer and a release countdown; and (2) the **milestones** required to ship the complete experience.
+The full experience is a longer build. This PRD covers two things: (1) the **preview page** built today — a sleek, iPhone-caliber intro ("Eternal Being" → a fragmentary scripture line), flowing into a ~115-second looping audiovisual sequence of all nine fruits with the press-and-hold flesh layer and a release countdown; and (2) the **milestones** required to ship the complete experience.
 
 **MVP goal:** a single-page preview that a visitor can open, tap to enter, watch, instinctively press-and-hold, feel the contrast, and leave curious about the countdown — all built and running locally today.
 
@@ -40,7 +40,7 @@ Technical comfort: none assumed. The only instruction ever shown is **"Press and
 ### In Scope
 **Core experience**
 - ✅ Intro sequence: white (Apple-white #fbfbfd) → "ETERNAL BEING" in black letterpressed/imprinted type → fragmentary scripture line → auto-dissolves into the loop (no tap prompt; ambient audio unlocks on the visitor's first interaction instead, since browsers require a gesture)
-- ✅ Continuous full-screen video loop through all nine fruits in Galatians order, 8s each (4 clips per fruit, ~72s full loop)
+- ✅ Continuous full-screen video loop through all nine fruits in Galatians order, 12.8s each (4 clips per fruit, 115.2s full loop)
 - ✅ Press-and-hold (touch + mouse) reveals the works-of-the-flesh layer, time-aligned to the fruit timeline. Pairings follow the sketch-doc columns: Love↔Selfish ambition, Joy↔Quarrels; remaining placeholder pairs: Peace↔Hostility, Patience↔Anger, Kindness↔Envy, Goodness↔Harmful desire, Faithfulness↔Betrayal, Gentleness↔Aggression, Self-control↔Indulgence
 - ✅ Hold transition: 0–0.3s audio distortion begins → 0.3–0.7s image flickers/darkens → ~0.7s flesh fully visible; release returns instantly at the equivalent timeline point (never restarts from Love)
 - ✅ "REPENT" text surfaces during a sustained hold (teasing the full experience's mechanic; no punishment/lockout in the preview)
@@ -99,29 +99,30 @@ LOOP ⇄ HOLDING (press ≥ threshold; release returns at aligned timecode)
 ```
 eternalbeing/
 ├── docs/                      # PRD, sketches, research
+├── clips.json                 # 72-portion manifest: url + in/out + framing
+├── media-clips/               # hand-cut portions; override the manifest
 ├── scripts/
-│   └── ingest.sh              # yt-dlp + ffmpeg: links → trimmed clips
+│   └── ingest.mjs             # yt-dlp + ffmpeg: manifest → segments → reels
 ├── public/
 │   └── media/
-│       ├── fruit/<fruit>/     # <fruit>-1.mp4, <fruit>-2.mp4 (1.5–2s each)
-│       ├── flesh/<work>/      # aligned contrast clips
+│       ├── fruit-reel.mp4     # 115.2s baked fruit timeline
+│       ├── flesh-reel.mp4     # 115.2s aligned contrast timeline
 │       └── audio/             # vocals, heartbeat, atmosphere
 ├── src/
 │   ├── main.ts                # state machine + bootstrapping
 │   ├── config.ts              # fruits, pairs, timings, countdown date, copy
-│   ├── sequencer.ts           # timeline: which clip, when, both layers
-│   ├── renderer.ts            # Three.js scene, video texture, EffectComposer
-│   ├── shaders/               # grain, vignette, grade, RGB shift, badtv
+│   ├── renderer.ts            # Three.js scene, video textures, EffectComposer,
+│   │                          #   and the fruit/flesh crossfade shader
 │   ├── audio.ts               # WebAudio: layers, ducking, distortion, heartbeat rate
 │   ├── hold.ts                # pointer events, hold progress 0→1
-│   └── ui/                    # intro, countdown, hint, REPENT, sound toggle
+│   └── ui.ts                  # intro, countdown, hint, REPENT, sound toggle
 └── index.html
 ```
 
 **Key patterns**
-- **Dual-timeline sequencer:** one master clock; fruit and flesh playlists are parallel tracks over the same timecode. Holding crossfades *tracks*, never resets the clock. Both current-segment videos stay loaded (flesh video pre-seeked, muted) so the swap is instant.
+- **Dual baked timelines:** the two layers are pre-concatenated into equal-length reels (`fruit-reel.mp4` / `flesh-reel.mp4`), so a single master clock addresses both. Holding crossfades *layers* in the shader, never resets the clock. Both videos play together, muted, so the swap is instant; a drift corrector re-seeks the flesh video if it slips >0.08s.
 - **Hold progress as a uniform:** `holdT ∈ [0,1]` (eased) feeds every shader pass and audio node — one scalar drives the entire degradation.
-- **Config-driven content:** `config.ts` is the single source of truth for the nine fruits, contrast pairs, clip filenames, per-segment durations, playback rates, countdown target, and all on-screen copy.
+- **Config-driven content:** `config.ts` holds the nine fruits, contrast pairs, section length, countdown target, and all on-screen copy; `clips.json` holds every clip's source, window, and framing. Neither requires touching engine code.
 
 ## 7. Features — Detailed Specification
 
@@ -134,7 +135,7 @@ eternalbeing/
 | 4 | Auto-dissolve into Love clip 1 — no tap prompt; ambient audio unlocks on the visitor's first interaction | ~1.6s |
 
 ### 7.2 The loop (fruit layer)
-- Order fixed by Gal 5:22–23: Love, Joy, Peace, Patience, Kindness, Goodness, Faithfulness, Gentleness, Self-control. 8s per fruit (4 clips ≈ 2s each), 72s total, seamless return to Love. No visible fruit labels.
+- Order fixed by Gal 5:22–23: Love, Joy, Peace, Patience, Kindness, Goodness, Faithfulness, Gentleness, Self-control. 12.8s per fruit (4 clips × 3.2s), 115.2s total, seamless return to Love. No visible fruit labels.
 - Clip grammar per fruit: **Clip 1 = everyday expression**, **Clip 2 = costly expression** (sacrifice, restraint, forgiveness).
 - Source clips 3–5s → served at 1.5–2s at 1.1–1.4× speed. Direct cuts; occasional emotional clip at natural speed.
 - Grade: warm, slightly lifted blacks, gentle desaturation; fine film grain; soft vignette; stable framing. Target: "viewing a dream."
@@ -164,7 +165,15 @@ Network Effect's epilogue credits its GLSL to **Felix Turner, Altered Qualia, an
 | Flicker | Off | Luminance flicker (capped for photosensitivity; disabled under `prefers-reduced-motion`) |
 
 ### 7.6 Asset ingest pipeline
-`scripts/ingest.sh`: reads a manifest (fruit/work → URL → in/out timestamps) → `yt-dlp` download → `ffmpeg` trim, crop to cover-safe aspect, speed-adjust, strip/keep audio, transcode to H.264 MP4 (≤1080p, faststart) → `public/media/`. Manifest lives in the repo; re-running is idempotent.
+`scripts/ingest.mjs` reads `clips.json` — the committed manifest of all 72 portions (word → source URL → exact in/out timestamp → optional crop and framing note).
+
+For each slot: `yt-dlp --download-sections` pulls **only** the needed window plus 3s padding (~3 MB, not the whole video; YouTube ranges require `player_client=web_embedded`), then `ffmpeg` applies the crop, time-stretches to the fixed slot length, and cover-scales to 1280×720/30fps H.264. The 36 segments of a layer are concatenated into one faststart MP4 in `public/media/`.
+
+Fixed rates keep the contrast even: fruit windows are 4.0s → **1.25×**, flesh 6.0s → **1.875×**, both landing in a 3.2s slot, so the two reels stay frame-aligned for the hold swap.
+
+Slot pixels resolve in order: `media-clips/<layer>/<word>-<n>.<ext>` (hand-cut, always wins) → manifest window → generated placeholder.
+
+Re-running is idempotent and *incremental*: each segment stores a hash of its manifest entry, so editing one clip's timestamps re-cuts that clip alone. `--clip <id>`, `--section`, `--layer`, `--reels`, and `--force` scope a run; every build also writes `media-cache/review.html`, a 72-slot contact sheet for spotting bad trims.
 
 ## 8. Technology Stack
 
@@ -226,7 +235,7 @@ Not applicable — the preview is fully static with no backend. (Full build will
 - ✅ Record or commission the 9 fruit sentences + flesh sentences; wire into audio slots
 - ✅ Sound design pass (atmosphere beds, transition texture, mastering levels)
 - ✅ Motion/typography polish; share/OG card
-- **Validation:** full 36s loop with voices; blind-test 5 viewers — ≥4 discover the hold and describe the contrast unprompted.
+- **Validation:** full loop with voices; blind-test 5 viewers — ≥4 discover the hold and describe the contrast unprompted.
 
 ### Phase 3 — Rights & public launch of the preview (~2 weeks, overlaps P2)
 **Goal:** the preview goes live at eternalbeing.io.
@@ -267,4 +276,4 @@ Not applicable — the preview is fully static with no backend. (Full build will
 - **Research:** [docs/deep-research-report.md](deep-research-report.md) — Network Effect reverse-engineering + modern stack recommendations
 - **Ambient asset on hand:** [docs/childhoodvocalsG_major121bpm441hzm4a.m4a](childhoodvocalsG_major121bpm441hzm4a.m4a) (childhood vocals, G major, 121bpm)
 - **Key references:** [networkeffect.io](https://networkeffect.io/) · [Network Effect — Jonathan Harris](https://jjh.org/network-effect) · [Bad TV Shader (Felix Turner)](https://github.com/felixturner/bad-tv-shader) · Galatians 5:16–26
-- **Contrast pairs (canonical for this project):** Love↔Hostility · Joy↔Envy · Peace↔Conflict · Patience↔Anger · Kindness↔Selfish ambition · Goodness↔Harmful desire · Faithfulness↔Betrayal/Idolatry · Gentleness↔Aggression · Self-control↔Indulgence *(artistic pairings, not claims that Galatians assigns one official opposite per fruit)*
+- **Contrast pairs (canonical for this project):** Love↔Selfish ambition · Joy↔Quarrels · Peace↔Envy · Patience↔Outbursts of anger · Kindness↔Dissension · Goodness↔Revelry · Faithfulness↔Idolatry · Gentleness↔Enmity · Self-control↔Sexual immorality — taken from the columns of the sketch document *(artistic pairings, not claims that Galatians assigns one official opposite per fruit)*
